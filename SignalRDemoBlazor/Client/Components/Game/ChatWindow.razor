@@ -1,0 +1,36 @@
+﻿@using SignalRDemoBlazor.Client.Components.Buttons
+<h4>Chat</h4>
+<div class="row border border-secondary rounded-3 vh-50">
+    <div class="col-9 border border-primary rounded-start-3 overflow-auto mh-100" @ref=ChatArea>
+        @foreach(var message in Messages)
+        {
+            <div class="@GetMessageClasses(message)">
+                <div>@message.Body</div>
+                <b>@message.Title</b>
+            </div>            
+        }
+    </div>
+    <div class="col-3 bg-light overflow-auto mh-100 text-end">
+        <div>
+            <b>Participants</b>
+        </div>
+        <div>
+            @UserName (@Group) <b>[You]</b>
+        </div>
+        @foreach(var user in Users)
+        {
+            <div>
+                @user.Name (@user.Group)
+            </div>
+        }
+    </div>
+</div>
+<div class="row mt-3 g-1">
+    <div class="col">
+        <input type="text" class="form-control" @bind="Message" @bind:event="oninput" />
+    </div>
+    <div class="col-auto">
+        <Button Item="SendButton"/>
+    </div>
+    
+</div>

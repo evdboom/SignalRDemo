@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>SignalRDemoBlazor</title>
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/bootstrap/bootstrap-icons.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="SignalRDemoBlazor.Client.styles.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app">
+        <div class="modal fade show d-block" id="loading-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content position-relative">
+                    <div class="modal-header">
+                        <div class="modal-title">
+                            Loading...
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <h5>SignalR demo is currently loading</h5>                        
+                        <div class="loading align-text-center">
+                            <i class="bi bi-hourglass-split h1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop show"></div>
+    </div>
+    <script type="module" src="js/scroll-service.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+</html>

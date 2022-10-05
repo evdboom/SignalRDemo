@@ -1,0 +1,16 @@
+﻿<button id="@Item.Id"
+        title="@Item.GetToolTip()"
+        type="@Item.GetButtonType()"
+        tooltip="@Item.GetToolTip()"
+        class="@Item.GetButtonClass()"
+        disabled="@Item.IsDisabled()"
+        @onclick="Item.ClickAction">
+    @if (Item.ButtonType.HasFlag(ButtonTypes.Icon))
+    {
+        <i class="@Item.GetIcon()"></i>
+    }
+    @if (Item.ButtonType.HasFlag(ButtonTypes.Name))
+    {
+        <span>@Item.Name</span>
+    }
+</button>

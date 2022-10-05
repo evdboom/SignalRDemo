@@ -1,0 +1,19 @@
+﻿<div class="@Message.GetAlertType() w350 shadow-lg">
+    <div class="row g-0">
+        <div class="alert-heading h5 col text-wrap">@Message.Title</div>
+        <div class="col-auto">
+            <button type="button" class="btn-close" @onclick="@Message.Close" aria-label="Sluiten"></button>
+        </div>
+    </div>
+    <div class="row g-0">
+        <div class="col">
+            <p>@Message.Body</p>
+        </div>
+        <div class="col-auto me-auto">
+            @if (Message.ShowRemainingTime)
+            {
+                <b class="text-shadow">@Message.GetRemainingSeconds()</b>
+            }
+        </div>
+    </div>    
+</div>

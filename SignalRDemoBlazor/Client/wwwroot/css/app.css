@@ -1,0 +1,128 @@
+﻿.w50-inline {
+    min-width: 2.5em !important;
+    max-width: 2.5em !important;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.w100-inline {
+    min-width: 5.75em !important;
+    max-width: 5.75em !important;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.w150-inline {
+    min-width: 9em !important;
+    max-width: 9em !important;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.w200-inline {
+    min-width: 12.25em !important;
+    max-width: 12.25em !important;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.w250-inline {
+    min-width: 14.5em !important;
+    max-width: 14.5em !important;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.w50 {
+    min-width: 2.5em !important;
+    max-width: 2.5em !important;
+}
+
+.w100 {
+    min-width: 5.75em !important;
+    max-width: 5.75em !important;
+}
+
+.w150 {
+    min-width: 9em !important;
+    max-width: 9em !important;
+}
+
+.w200 {
+    min-width: 12.25em !important;
+    max-width: 12.25em !important;
+}
+
+.w250 {
+    min-width: 14.5em !important;
+    max-width: 14.5em !important;
+}
+
+.w300 {
+    min-width: 16.75em !important;
+    max-width: 16.75em !important;
+}
+
+.w350 {
+    min-width: 19em !important;
+    max-width: 19em !important;
+}
+
+.top {
+    z-index: 2000;
+}
+
+.width-90p {
+    min-width: 90%;
+    max-width: 90%;
+    overflow: hidden;
+}
+
+.draggable {
+    cursor: move;
+    user-select: none;
+}
+
+[tooltip]:hover::after {
+    content: attr(tooltip);
+    position: absolute;
+    left: 10%;
+    bottom: 90%;
+    background-color: #f8f9fa;
+    box-shadow: rgba(0,0,0,.5) 3px 3px 5px;
+    border: 1px solid rgba(0,0,0,.5);
+    color: rgba(0,0,0,.5);
+    border-radius: .3rem;
+    padding-top: .2rem;
+    padding-bottom: .2rem;
+    padding-left: .5rem;
+    padding-right: .5rem;
+}
+
+.message-box {
+    position: fixed;
+    z-index: 1065;
+    right: 2em;
+    top: 1em;
+}
+
+.text-shadow {
+    text-shadow: 1px 1px 3px;
+}
+
+.support-dropdown {
+    overflow: visible !important;
+}
+
+.btn-outline-white {
+    --bs-btn-bg: white;
+}
+
+.vh-50 {
+    height: 50vh;
+    max-height: 50vh;
+}
+
+.mh-100 {
+    max-height: 100%;
+}

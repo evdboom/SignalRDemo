@@ -1,0 +1,8 @@
+﻿<div class="message-box">
+    @foreach (var message in MessageService.GetOpenMessages())
+    {
+    <div class="row">
+        <MessageComponent Message="message" />
+    </div>
+    }
+</div>

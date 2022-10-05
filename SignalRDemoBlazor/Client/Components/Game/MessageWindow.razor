@@ -1,0 +1,26 @@
+﻿@using SignalRDemoBlazor.Client.Components.Buttons
+<h4>Send messages</h4>
+<div class="row p-4">
+    <div class="form-group row">
+        <div class="col">
+            <label for="message-input" class="form-label">Message</label>
+            <input type="text" class="form-control" id="username-input" @bind="Message" @bind:event="oninput" placeholder="Message to sent" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col">
+            <label for="select-recipient" class="form-label">Recipient(s)</label>
+            <select @bind="Recipient" class="form-select" id="select-recipient">
+                @foreach(var recipient in Recipients)
+                {
+                    <option value="@recipient.Id" name="@recipient.Name">@recipient.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group row mt-3">
+        <div class="col">
+            <Button Item="SendButton"/>
+        </div>        
+    </div>
+</div>
