@@ -1,7 +1,7 @@
 ﻿@using SignalRDemoBlazor.Client.Components.Buttons
 <h4>Chat</h4>
-<div class="row border border-secondary rounded-3 vh-50">
-    <div class="col-9 border border-primary rounded-start-3 overflow-auto mh-100" @ref=ChatArea>
+<div class="row border border-secondary rounded vh-50">
+    <div class="col-9 border border-primary rounded-start overflow-auto mh-100" @ref=ChatArea>
         @foreach(var message in Messages)
         {
             <div class="@GetMessageClasses(message)">
@@ -27,7 +27,7 @@
 </div>
 <div class="row mt-3 g-1">
     <div class="col">
-        <input type="text" class="form-control" @bind="Message" @bind:event="oninput" />
+        <input type="text" class="form-control" @bind="Message" @bind:event="oninput" @onkeypress="KeyPress" />
     </div>
     <div class="col-auto">
         <Button Item="SendButton"/>

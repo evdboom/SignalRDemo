@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using SignalRDemoBlazor.Client.Components.Buttons;
+using SignalRDemoBlazor.Client.Components.Modals;
 using SignalRDemoBlazor.Client.Services;
 
 namespace SignalRDemoBlazor.Client.Components.Game
@@ -14,6 +15,7 @@ namespace SignalRDemoBlazor.Client.Components.Game
         [Inject]
         private SignalRService SignaRService { get; set; } = null!;
 
+        private Modal Modal { get; set; } = null!;
         private ButtonClass RefreshButton { get; set; } = null!;
 
         protected override void OnInitialized()
@@ -31,6 +33,7 @@ namespace SignalRDemoBlazor.Client.Components.Game
         private async Task Refresh()
         {
             await SignaRService.Refresh();
+            await Modal.Show();
         }
 
         private string GetStyle()

@@ -36,8 +36,22 @@ namespace SignalRDemoBlazor.Client.Pages
             await SignaRService.InitializeAsync();            
         }
 
+        private async Task KeyPress(KeyboardEventArgs args)
+        {
+            if (args.Key == "Enter")
+            {
+                await RegisterUser();
+            }
+        }
+
+
         private async Task RegisterUser()
         {
+            if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(PinCode))
+            {
+                return;
+            }
+
             await SignaRService.RegisterUser(UserName, PinCode);
         }        
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using SignalRDemoBlazor.Client.Components.Buttons;
 using SignalRDemoBlazor.Client.Components.Messaging;
@@ -51,10 +52,18 @@ namespace SignalRDemoBlazor.Client.Components.Game
                 "import", "./js/scroll-service.js").AsTask());
         }
 
+        private async Task KeyPress(KeyboardEventArgs args)
+        {
+            if (args.Key == "Enter")
+            {
+                await SendMessage();
+            }            
+        }
+
         private string GetMessageClasses(MessageClass message)
         {
             StringBuilder sb = new();
-            sb.Append("p-1 mb-2 border rounded-2");
+            sb.Append("p-1 mb-2 border rounded-1");
             if (message.Title == MeTitle)
             {
                 sb.Append(" border-success bg-success text-end");

@@ -1,16 +1,14 @@
-﻿using Fh.Blz.Bsl.Enums;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using System.Threading.Tasks;
 
-namespace Fh.Blz.Bsl.Components.Modals
+namespace SignalRDemoBlazor.Client.Components.Modals
 {
     public partial class Modal
     {
         [Parameter]
-        public string ModalId { get; set; }
+        public string ModalId { get; set; } = string.Empty;
         [Parameter]
-        public ObjectSize ModalSize { get; set; }
+        public ModalSize ModalSize { get; set; }
         [Parameter]
         public RenderFragment ModalTitle { get; set; }
         [Parameter]
@@ -63,22 +61,22 @@ namespace Fh.Blz.Bsl.Components.Modals
         {
             return ModalSize switch
             {
-                ObjectSize.ExtraSmall => "modal-sm",
-                ObjectSize.Small => "modal-sm",
-                ObjectSize.Large => "modal-lg",
-                ObjectSize.ExtraLarge => "modal-xl",
+                ModalSize.ExtraSmall => "modal-sm",
+                ModalSize.Small => "modal-sm",
+                ModalSize.Large => "modal-lg",
+                ModalSize.ExtraLarge => "modal-xl",
                 _ => string.Empty
             };
         }
 
         private string SupportsDropdowns()
         {
-            return SupportDropdowns ? "support-dropdown" : null;
+            return SupportDropdowns ? "support-dropdown" : string.Empty;
         }
 
         private string DraggableClass()
         {
-            return Draggable ? "draggable" : null;
+            return Draggable ? "draggable" : string.Empty;
         }
 
         private void TitleMouseDown(MouseEventArgs args)
