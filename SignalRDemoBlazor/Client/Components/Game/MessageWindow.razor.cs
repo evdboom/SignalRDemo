@@ -39,12 +39,13 @@ namespace SignalRDemoBlazor.Client.Components.Game
 
         private async Task SendMessage()
         {
-            if (_selectedRecipient is null)
+            if (_selectedRecipient is null || string.IsNullOrEmpty(Message))
             {
                 return;
             }
 
             await SignalRService.SendMessage(Message, _selectedRecipient.Target, _selectedRecipient.TargetType);
+            Message = string.Empty;
         }
 
         private async void UsersChanged(object? sender, EventArgs e)
@@ -72,6 +73,7 @@ namespace SignalRDemoBlazor.Client.Components.Game
                     Group = user.Group,
                     TargetType = TargetType.User
                 }));
+            _selectedRecipient ??= Recipients.FirstOrDefault();
             StateHasChanged();
         }
 

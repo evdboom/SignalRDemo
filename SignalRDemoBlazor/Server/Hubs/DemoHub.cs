@@ -19,12 +19,10 @@ namespace SignalRDemoBlazor.Server.Hubs
             };
         }
 
-        public async Task GetUserList()
+        public Task<List<GameUser>> GetUserList()
         {
             var users = _gameManager.GetUsers(Context.ConnectionId);
-            await Clients
-                .Caller
-                .SendAsync(MessageType.UserListReceived, users);
+            return Task.FromResult(users);
         }
 
         public async Task ReregisterUser(string userName)
@@ -89,10 +87,89 @@ namespace SignalRDemoBlazor.Server.Hubs
                 .SendAsync(MessageType.ChatReceived, message, sender);
         }
 
+
+        public async Task AnswerQuestion(string question, string answer)
+        {
+            var sender = _gameManager.FindUserByConnection(Context.ConnectionId);
+            if (sender is null)
+            {
+                await Clients
+                    .Caller
+                    .SendAsync(MessageType.MessageReceived, "You are not known a a user, did you register?", _systemUser, AlertType.Warning, "");
+                return;
+            }
+
+            _gameManager.AnswerQuestion(sender, question, answer);
+        }
+
+        public async Task StartQuiz()
+        {
+            var sender = _gameManager.FindUserByConnection(Context.ConnectionId);
+            if (sender is null || sender.Name != "Erik")
+            {
+                await Clients
+                    .Caller
+                    .SendAsync(MessageType.MessageReceived, "You are not known a a user or not the gamehost, did you register?", _systemUser, AlertType.Warning, "");
+                return;
+            }
+
+            var question = _gameManager.GetNextQuestion();
+            if (question is null)
+            {
+                return;
+            }
+
+            await Clients
+                .All
+                .SendAsync(MessageType.QuestionReceived, question);
+        }
+
+        public async Task StartQuestion()
+        {
+            _gameManager.StartQuestion();
+            await Clients
+                .All
+                .SendAsync(MessageType.QuestionStarted);
+
+        }
+
+        public async IAsyncEnumerable<QuestionProgress> QuestionProgress()
+        {
+            var question = _gameManager.GetCurrentQuestion();
+            if (question is null)
+            {
+                yield break;
+            }
+            
+            var finishTime = question.AskTime.AddSeconds(question.SecondsToAnswer);
+            while(finishTime > DateTime.UtcNow)
+            {
+                var progress = new QuestionProgress
+                {
+                    CurrentProgress = (int)DateTime.UtcNow.Subtract(question.AskTime).TotalMilliseconds,
+                    TotalProgress = question.SecondsToAnswer * 1000
+                };
+                
+                yield return progress;                
+                await Task.Delay(10);
+            }
+            yield return new QuestionProgress
+            {
+                CurrentProgress = 100,
+                TotalProgress = 100
+            };
+        }
+
+        public Task<Question?> GetState()
+        {            
+            var question = _gameManager.GetCurrentQuestion();
+            return Task.FromResult(question);
+        }
+
         public Task SendMessage(string message, string target, TargetType targetType)
         {
             return Send(MessageType.MessageReceived, message, target, targetType);
-        }
+        }       
 
         private async Task Send(string sendMethod, string message, string target, TargetType targetType)
         {

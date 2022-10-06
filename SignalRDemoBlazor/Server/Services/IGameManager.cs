@@ -11,5 +11,9 @@ namespace SignalRDemoBlazor.Server.Services
         GameUser? ReregisterUser(string userName, string connectionId);
         GameUser? RemoveUser(string connectionId);
         List<GameUser> GetUsers(string excludeConnectionId);
+        void AnswerQuestion(GameUser sender, string question, string answer);
+        Question? GetNextQuestion();
+        Question? GetCurrentQuestion();
+        void StartQuestion();
     }
 }

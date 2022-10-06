@@ -16,6 +16,7 @@ namespace SignalRDemoBlazor.Client.Pages
         private MessageService MessageService { get; set; } = null!;
 
         private bool Registered { get; set; }
+        private bool Registering { get; set; }
         private string UserName { get; set; } = string.Empty;
         private string PinCode { get; set; } = string.Empty;
         private string Group { get; set; } = string.Empty;
@@ -51,19 +52,26 @@ namespace SignalRDemoBlazor.Client.Pages
             {
                 return;
             }
-
+            Registering = true;
+            StateHasChanged();
             await SignaRService.RegisterUser(UserName, PinCode);
         }        
 
         private void MessageReceived(object? sender, Events.MessageEventArgs e)
-        {
-            
+        {            
             if (!Registered && e.Message.Code == MessageCodes.SuccesfullyJoined)
             {
 
                 Group = e.Message!.User!.Group;
                 UserName = e.Message!.User!.Name;
+                Registering = false;
                 Registered = true;
+                _ = SignaRService.GetState();
+                StateHasChanged();
+            }
+            else if (Registering && e.Message.Type == AlertType.Warning)
+            {
+                Registering = false;
                 StateHasChanged();
             }
 

@@ -7,8 +7,10 @@
                     <div class="modal-title">
                         @ModalTitle
                     </div>
-                    <button type="button" class="btn-close" @onclick="Close" aria-label="Sluiten">
-                    </button>
+                    @if(!UserCannotClose)
+                    {
+                        <button type="button" class="btn-close" @onclick="Close" aria-label="Sluiten"></button>
+                    }
                 </div>
                 <div class="modal-body @SupportsDropdowns()">
                     @ModalBody

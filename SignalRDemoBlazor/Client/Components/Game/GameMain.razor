@@ -12,10 +12,16 @@
         <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off" @onclick="Disable">
         <label class="btn btn-outline-danger btn-outline-white" for="danger-outlined">SignalR Off</label>
     </div>
-    @if (SignaRService.Disabled)
+    @if (SignalRService.Disabled)
     {
         <div class="col-lg-1">
-            <Button Item="RefreshButton"/>
+            <Button Item="RefreshButton"/>            
+        </div>
+    }
+    @if (UserName == "Erik")
+    {
+        <div class="col-lg-1">
+            <Button Item="StartQuizButton" />
         </div>
     }
 </div>
@@ -29,15 +35,83 @@
         <MessageWindow />
     </div>    
 </div>
-<Modal @ref=Modal
-    Draggable=true>
+@if (CurrentQuestion is not null)
+{
+    <Modal 
+    ModalId="question-modal"
+    @ref=QuestionModal
+    ModalSize="@ModalSize"
+    Draggable=true
+    UserCannotClose=true>
+        <ModalTitle>
+            <h4>@CurrentQuestion.Subject</h4>
+        </ModalTitle>
+        <ModalBody>
+            <h5>@CurrentQuestion.QuestionText</h5>
+            @if (CurrentQuestionStarted)
+            {
+                @foreach (var answer in CurrentAnswerOptions)
+                {
+                    <div class="p-1">
+                        <Button Item="@answer" />
+                    </div>
+                }
+            }
+        </ModalBody>
+        <ModalFooter>
+            <progress class="w-100" value="@CurrentQuestionProgress" max="@CurrentQuestionMaxProgress" />
+            @if (UserName == "Erik" && !CurrentQuestionStarted)
+            {
+                <Button Item="StartQuestionButton"/>
+            }
+        </ModalFooter>
+    </Modal>
+}
+@if (Result is not null)
+{
+<Modal ModalId="answer-modal"
+       @ref=AnswerModal
+       ModalSize="@ModalSize"
+       Draggable=true>
     <ModalTitle>
-        test
+        <h4>Antwoord</h4>
     </ModalTitle>
     <ModalBody>
-        testiets
+        <h5>Het goede antwoord was: @Result.CorrectAnswer</h5>
+        @if (Result.Quickest is not null)
+        {
+            <div>Snelste antwoord: @Result.Quickest.Name (@Result.Quickest.Group)</div>
+        }
+        else
+        {
+            <div>Helaas! niemand had de vraag goed.</div>
+        }
+        
+        <div>
+            <b>Scores</b>
+        </div>
+        @foreach(var score in Result.Scores)
+        {
+            @if (IsWinner(score))                
+            {
+                <div>
+                    <h3>
+                        @score.Group: @score.TotalScore punten
+                        <i class="bi bi-trophy"></i>
+                    </h3>
+                </div>
+            }
+            else
+            {
+                <div>@score.Group: @score.TotalScore punten</div>
+            }
+        }
     </ModalBody>
     <ModalFooter>
-        test iets anders
+            @if (UserName == "Erik" && !LastQuestion)
+            {
+                <Button Item="StartQuizButton"/>
+            }
     </ModalFooter>
 </Modal>
+}

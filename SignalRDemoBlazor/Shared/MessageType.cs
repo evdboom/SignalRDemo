@@ -15,7 +15,15 @@
         public const string UserJoined = "UserJoined";
         public const string UserLeft = "UserLeft";
         public const string GetUserList = "GetUserList";
-        public const string UserListReceived = "UserListReceived";
 
+        public const string AnswerQuestion = "AnswerQuestion";
+        public const string QuestionProgress = "QuestionProgress";
+        public const string QuestionDone = "QuestionDone";
+
+        public const string StartQuiz = "StartQuiz";
+        public const string StartQuestion = "StartQuestion";
+
+        public const string QuestionStarted = "QuestionStarted";
+        public const string GetState = "GetState";
     }
 }

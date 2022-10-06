@@ -23,6 +23,8 @@ namespace SignalRDemoBlazor.Client.Components.Modals
         public bool Draggable { get; set; }
         [Parameter]
         public bool SupportDropdowns { get; set; }
+        [Parameter]
+        public bool UserCannotClose { get; set; }
 
         private bool _showDialog;
         private bool _dragging;
@@ -95,7 +97,7 @@ namespace SignalRDemoBlazor.Client.Components.Modals
         private async Task BackgroundUp(MouseEventArgs args)
         {
             _dragging = false;
-            if (_backgroundDown)
+            if (_backgroundDown && !UserCannotClose)
             {
                 await Close();
             }

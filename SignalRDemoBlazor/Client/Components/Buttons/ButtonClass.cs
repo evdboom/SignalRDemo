@@ -13,6 +13,7 @@ namespace SignalRDemoBlazor.Client.Components.Buttons
         public ButtonTypes ButtonType { get; set; }
         public ButtonSize Size { get; set; }
         public bool IsSubmit { get; set; }
+        public bool IsSelected { get; set; }
         public string OtherIconClass { get; set; } = string.Empty;
         public int Priority { get; set; }
 
@@ -36,6 +37,10 @@ namespace SignalRDemoBlazor.Client.Components.Buttons
 
         private string GetActionClass()
         {
+            if (IsSelected)
+            {
+                return "btn btn-success";
+            }
             return ActionType switch
             {
                 ActionType.Add => "btn btn-success",
@@ -65,6 +70,10 @@ namespace SignalRDemoBlazor.Client.Components.Buttons
 
         public string GetIcon()
         {
+            if (IsSelected)
+            {
+                return "bi-circle-fill";
+            }
             return ActionType switch
             {
                 ActionType.Add => "bi-plus",

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.SignalR.Client;
 using SignalRDemoBlazor.Client.Components.Messaging;
 using SignalRDemoBlazor.Client.Events;
@@ -22,9 +23,15 @@ namespace SignalRDemoBlazor.Client.Services
         public event EventHandler<MessageEventArgs>? MessageReceived;
         public event EventHandler<MessageEventArgs>? ChatReceived;
         public event EventHandler? UsersChanged;
+        public event EventHandler<QuestionEventArgs>? QuestionAsked;
+        public event EventHandler<ProgressEventArgs>? QuestionProgressUpdated;
+        public event EventHandler<AnswerEventArgs>? QuestionDone;
+        public event EventHandler? QuestionStarted;
 
         public bool Disabled => _disabled;
         public bool Connected => _connection?.State == HubConnectionState.Connected;
+
+        
 
         public SignalRService(NavigationManager navigation, SessionStorageService storage)
         {
@@ -36,7 +43,6 @@ namespace SignalRDemoBlazor.Client.Services
         {
             await _storage.SetItemIfEmptyAsync<List<MessageClass>>(ChatMessages, new());
             await _storage.SetItemIfEmptyAsync<List<GameUser>>(Users, new());
-
 
             _connection = new HubConnectionBuilder()
                 .WithUrl(_navigation.ToAbsoluteUri("/demoHub"))
@@ -100,15 +106,24 @@ namespace SignalRDemoBlazor.Client.Services
                 }
 
             });
-            _connection.On(MessageType.UserListReceived, async (List<GameUser> users) =>
+            _connection.On(MessageType.QuestionReceived, (Question question) =>
             {
-                await _storage.SetItemAsync(Users, users);
-                if (!_disabled)
+                QuestionAsked?.Invoke(this, new QuestionEventArgs(question));                
+            });
+            _connection.On(MessageType.QuestionDone, (AnswerResult answer) =>
+            {
+                QuestionDone?.Invoke(this, new(answer));
+            });
+            _connection.On(MessageType.QuestionStarted, async () =>
+            {
+                QuestionStarted?.Invoke(this, new());
+                var stream = _connection.StreamAsync<QuestionProgress>(MessageType.QuestionProgress);
+                await foreach (var progress in stream)
                 {
-                    UsersChanged?.Invoke(this, new());
+                    QuestionProgressUpdated?.Invoke(this, new ProgressEventArgs { Loaded = progress.CurrentProgress, Total = progress.TotalProgress });
                 }
             });
-
+                            
             await _connection.StartAsync();
 
             await RefreshUsers();
@@ -122,7 +137,12 @@ namespace SignalRDemoBlazor.Client.Services
                 throw new InvalidOperationException("Hub not connected yet, did you initialize?");
             }
 
-            await _connection!.SendAsync(MessageType.GetUserList);
+            var users = await _connection!.InvokeAsync<List<GameUser>>(MessageType.GetUserList);
+            await _storage.SetItemAsync(Users, users);
+            if (!_disabled)
+            {
+                UsersChanged?.Invoke(this, new());
+            }            
         }
 
         public async Task<List<GameUser>> GetUsers()
@@ -201,6 +221,46 @@ namespace SignalRDemoBlazor.Client.Services
             ChatReceived?.Invoke(this, new MessageEventArgs(null!));
 
             return Task.CompletedTask;
+        }
+
+        public async Task AnswerQuestion(string question, string answer)
+        {
+            if (!Connected)
+            {
+                throw new InvalidOperationException("Hub not connected yet, did you initialize?");
+            }
+
+            await _connection!.SendAsync(MessageType.AnswerQuestion, question, answer);
+        }
+
+        public async Task StartQuiz()
+        {
+            await _connection!.SendAsync(MessageType.StartQuiz);
+        }
+
+        public async Task StartQuestion()
+        {
+            await _connection!.SendAsync(MessageType.StartQuestion);
+        }
+
+        public async Task GetState()
+        {
+            var question = await _connection!.InvokeAsync<Question>(MessageType.GetState);
+            if (question is null)
+            {
+                return;
+            }
+
+            QuestionAsked?.Invoke(this, new(question));
+            if (question.AskTime > DateTime.MinValue)
+            {
+                QuestionStarted?.Invoke(this, new());
+                var stream = _connection!.StreamAsync<QuestionProgress>(MessageType.QuestionProgress);
+                await foreach (var progress in stream)
+                {
+                    QuestionProgressUpdated?.Invoke(this, new ProgressEventArgs { Loaded = progress.CurrentProgress, Total = progress.TotalProgress });
+                }
+            }
         }
     }
 }

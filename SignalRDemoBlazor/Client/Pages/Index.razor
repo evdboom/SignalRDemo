@@ -10,6 +10,15 @@
         UserName="@UserName"
         Group="@Group"/>
 }
+else if (Registering)
+{
+    <div class="p-4">
+        <h5>Busy signing in, if a quiz is running you will join afterward the current question.</h5>
+        <div class="loading text-center">
+            <i class="bi bi-hourglass-split h1 opacity-75"></i>
+        </div>
+    </div>
+}
 else
 {
     <div class="p-4">
@@ -32,4 +41,3 @@ else
         </div>
     </div>
 }
-
