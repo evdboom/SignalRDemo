@@ -87,7 +87,7 @@ namespace SignalRDemoBlazor.Server.Services
                     "Verwerking upload",
                     "Comments sectie",
                     "Blog",
-                    "Geen (altijd toegevoegde waarde)"
+                    "Geen (altijd goed)"
                 }
             };
             var answer = "Blog";
