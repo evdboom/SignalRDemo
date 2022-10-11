@@ -61,7 +61,6 @@ namespace SignalRDemoBlazor.Client.Pages
         {            
             if (!Registered && e.Message.Code == MessageCodes.SuccesfullyJoined)
             {
-
                 Group = e.Message!.User!.Group;
                 UserName = e.Message!.User!.Name;
                 Registering = false;

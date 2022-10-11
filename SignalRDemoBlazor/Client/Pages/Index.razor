@@ -13,7 +13,7 @@
 else if (Registering)
 {
     <div class="p-4">
-        <h5>Busy signing in, if a quiz is running you will join afterward the current question.</h5>
+        <h5>Busy signing in, if a quiz is running you will join after the current question.</h5>
         <div class="loading text-center">
             <i class="bi bi-hourglass-split h1 opacity-75"></i>
         </div>
@@ -31,7 +31,7 @@ else
         <div class="form-group row">
             <div class="col-lg-3">
                 <label for="pincode-input" class="form-label">Pincode</label>
-                <input type="text" class="form-control" id="pincode-input" @bind="PinCode" @bind:event="oninput" @onkeypress="KeyPress" placeholder="Enter PIN code" />
+                <input type="password" class="form-control" id="pincode-input" @bind="PinCode" @bind:event="oninput" @onkeypress="KeyPress" placeholder="Enter PIN code" />
             </div>
         </div>
         <div class="form-group row mt-3">

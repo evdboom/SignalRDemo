@@ -6,7 +6,7 @@
     </div>
     @if (MayEnable)
     {
-        <div class="col-lg-1 offset-lg-3">
+        <div class="col-lg-1 offset-lg-2">
             <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off" @onclick="Enable">
             <label class="btn btn-outline-success btn-outline-white" for="success-outlined">SignalR On</label>
         </div>
@@ -21,19 +21,22 @@
     }
     @if (SignalRService.Disabled)
     {
-        <div class="col-lg-2">
+        <div class="col-lg-auto">
             <Button Item="RefreshButton"/>            
         </div>
     }
-    @if (UserName == "Erik" && MayEnable)
+    @if (SignalRService.AmHost && MayEnable)
     {
-        <div class="col-lg-2">
+        <div class="col-lg-auto">
             <Button Item="StartQuizButton" />
         </div>
+        <div class="col-lg-auto">
+            <Button Item="ResetButton" />
+        </div>
     }
-    @if (UserName == "Erik" && !MayEnable)
+    @if (SignalRService.AmHost && !MayEnable)
     {
-        <div class="col-lg-2">
+        <div class="col-lg-auto">
             <Button Item="ActivateSignalRButton" />
         </div>
     }
@@ -73,7 +76,7 @@
         </ModalBody>
         <ModalFooter>
             <progress class="w-100" value="@CurrentQuestionProgress" max="@CurrentQuestionMaxProgress" />
-            @if (UserName == "Erik" && !CurrentQuestionStarted)
+            @if (SignalRService.AmHost && !CurrentQuestionStarted)
             {
                 <Button Item="StartQuestionButton"/>
             }
@@ -121,7 +124,7 @@
         }
     </ModalBody>
     <ModalFooter>
-            @if (UserName == "Erik" && !LastQuestion)
+            @if (SignalRService.AmHost && !LastQuestion)
             {
                 <Button Item="StartQuizButton"/>
             }

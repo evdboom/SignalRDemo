@@ -19,6 +19,7 @@ namespace SignalRDemoBlazor.Client.Services
 
         private HubConnection? _connection;
         private bool _disabled;
+        private bool _amHost;
 
         public event EventHandler<MessageEventArgs>? MessageAdded;
         public event EventHandler<MessageEventArgs>? MessageReceived;
@@ -30,7 +31,7 @@ namespace SignalRDemoBlazor.Client.Services
         public event EventHandler? QuestionStarted;
         public event EventHandler<bool>? MayEnable;
 
-
+        public bool AmHost => _amHost;
         public bool Disabled => _disabled;
         public bool Connected => _connection?.State == HubConnectionState.Connected;
 
@@ -51,20 +52,25 @@ namespace SignalRDemoBlazor.Client.Services
                 .Build();
 
             _connection.On(MessageType.MessageReceived, async (string message, GameUser sender, AlertType type, string? messageCode) =>
-            {
-                    var totalMessage = new MessageClass
-                    {
-                        Title = (sender.IsSystemUser || messageCode == MessageCodes.SuccesfullyJoined) ? "System" : $"{sender?.Name ?? "Someone"} sent you a message",
-                        Body = message,
-                        Type = type,
-                        Code = messageCode,
-                        User = sender
-                    };
+            {                
+                var totalMessage = new MessageClass
+                {
+                    Title = (sender.IsSystemUser || 
+                            messageCode == MessageCodes.SuccesfullyJoined) 
+                        ? "System" 
+                        : $"{sender?.Name ?? "Someone"} sent you a message",
+                    Body = message,
+                    Type = type,
+                    Code = messageCode,
+                    User = sender
+                };
 
-                    if (messageCode == MessageCodes.SuccesfullyJoined)
-                    {
-                        await _storage.SetItemAsync(User, sender!.Name);
-                    }
+                if (messageCode == MessageCodes.SuccesfullyJoined)
+                {
+                    await _storage.SetItemAsync(User, sender!.Name);
+                    _amHost = sender!.IsGameHost;
+                }
+
                 if (!_disabled)
                 {
                     MessageReceived?.Invoke(this, new MessageEventArgs(totalMessage));
@@ -114,7 +120,7 @@ namespace SignalRDemoBlazor.Client.Services
             });
             _connection.On(MessageType.QuestionReceived, (Question question) =>
             {
-                QuestionAsked?.Invoke(this, new QuestionEventArgs(question));                
+                QuestionAsked?.Invoke(this, new QuestionEventArgs(question));
             });
             _connection.On(MessageType.QuestionDone, (AnswerResult answer) =>
             {
@@ -133,7 +139,7 @@ namespace SignalRDemoBlazor.Client.Services
             {
                 MayEnable?.Invoke(this, mayEnable);
             });
-                            
+
             await _connection.StartAsync();
 
             await RefreshUsers();
@@ -167,7 +173,7 @@ namespace SignalRDemoBlazor.Client.Services
             if (!_disabled)
             {
                 UsersChanged?.Invoke(this, new());
-            }            
+            }
         }
 
         public async Task<List<GameUser>> GetUsers()
@@ -296,6 +302,16 @@ namespace SignalRDemoBlazor.Client.Services
             }
 
             await _connection!.SendAsync(MessageType.ActivateSignalR);
+        }
+
+        public async Task ResetGame()
+        {
+            if (!Connected)
+            {
+                throw new InvalidOperationException("Hub not connected yet, did you initialize?");
+            }
+
+            await _connection!.SendAsync(MessageType.ResetGame);
         }
     }
 }

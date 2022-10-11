@@ -30,5 +30,6 @@
         public const string GetMayEnable = "GetMayEnable";
 
         public const string ActivateSignalR = "ActivateSignalR";
+        public const string ResetGame = "ResetGame";
     }
 }

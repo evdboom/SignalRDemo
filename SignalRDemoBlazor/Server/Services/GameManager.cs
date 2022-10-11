@@ -11,11 +11,16 @@ namespace SignalRDemoBlazor.Server.Services
         private readonly IHubContext<DemoHub> _hubContext;
         private readonly List<QuestionControl> _questions;
         private QuestionControl? _currentQuestion;
+        private GameUser? _host;
         private readonly List<GameUser> _users;
         private readonly List<GameUser> _removedUsers;
         private readonly ConcurrentDictionary<string, Score> _scores;
         private readonly string[] _groups;
-        private const string PinCode = "918273";
+
+        private const string PincodeVariable = "Pincode";
+        private const string GamehostPincodeVariable = "GameHostPincode";
+        private string _pinCode;
+        private string _hostPincode;
         private int[] _scoreList;
 
         private int _lastGroup;
@@ -24,6 +29,9 @@ namespace SignalRDemoBlazor.Server.Services
 
         public GameManager(IHubContext<DemoHub> hubContext)
         {
+            _pinCode = Environment.GetEnvironmentVariable(PincodeVariable) ?? "test";
+            _hostPincode = Environment.GetEnvironmentVariable(GamehostPincodeVariable) ?? "test-host";
+
             _hubContext = hubContext;
             _removedUsers = new();
             _users = new();
@@ -130,7 +138,11 @@ namespace SignalRDemoBlazor.Server.Services
 
         public bool CanRegister(string userName, string pinCode, string connectionId, out string message)
         {
-            if (pinCode != PinCode)
+            if (pinCode == _hostPincode && _host is not null)
+            {
+                message = "Host is already registered";
+            }
+            else if (pinCode != _pinCode && pinCode != _hostPincode)
             {
                 message = $"Incorrect PIN code";
             }
@@ -175,9 +187,14 @@ namespace SignalRDemoBlazor.Server.Services
             return null;
         }
 
-        public GameUser RegisterUser(string userName, string connectionId)
+        public string? GetHostId()
         {
-            if (!CanRegister(userName, PinCode, connectionId, out string message))
+            return _host?.ConnectionId;
+        }
+
+        public GameUser RegisterUser(string userName, string connectionId, string pinCode)
+        {
+            if (!CanRegister(userName, pinCode, connectionId, out string message))
             {
                 throw new InvalidOperationException(message);
             }
@@ -186,16 +203,43 @@ namespace SignalRDemoBlazor.Server.Services
             {
                 ConnectionId = connectionId,
                 Group = GetNextGroup(),
-                Name = userName
+                Name = userName,
+                IsGameHost = pinCode == _hostPincode
             };
             _users.Add(user);
 
+            if (user.IsGameHost)
+            {
+                _host = user;
+            }
+
             return user;
+        }
+
+        public void Reset()
+        {
+            _mayEnable = false;
+            foreach (var question in _questions)
+            {
+                question.Asked = false;
+                question.GivenAnswers.Clear();
+                question.Question.AskTime = DateTime.MinValue;
+            }
+            foreach(var score in _scores)
+            {
+                score.Value.TotalScore = 0;
+            }
+            _currentQuestion = null;
         }
 
         public GameUser? RemoveUser(string connectionId)
         {
             var user = FindUserByConnection(connectionId);
+            if (_host?.ConnectionId == connectionId)
+            {
+                _host = null;
+            }
+
             if (user is not null)
             {
                 _users.Remove(user);

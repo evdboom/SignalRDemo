@@ -19,6 +19,18 @@ namespace SignalRDemoBlazor.Server.Hubs
             };
         }
 
+        public async Task ResetGame()
+        {
+            if (_gameManager.GetHostId() != Context.ConnectionId)
+            {
+                await Clients
+                    .Caller
+                    .SendAsync(MessageType.MessageReceived, "You are not the gamehost, did you register correctly?", _systemUser, AlertType.Warning, "");
+                return;
+            }
+            _gameManager.Reset();
+        }
+
         public Task<List<GameUser>> GetUserList()
         {
             var users = _gameManager.GetUsers(Context.ConnectionId);
@@ -28,7 +40,7 @@ namespace SignalRDemoBlazor.Server.Hubs
         public async Task ReregisterUser(string userName)
         {
             if (_gameManager.ReregisterUser(userName, Context.ConnectionId) is GameUser reconnect)
-            {                                       
+            {
                 await Groups.AddToGroupAsync(Context.ConnectionId, reconnect.Group);
 
                 await Clients
@@ -51,16 +63,15 @@ namespace SignalRDemoBlazor.Server.Hubs
         }
 
         public async Task ActivateSignalR()
-        {            
-            var sender = _gameManager.FindUserByConnection(Context.ConnectionId);
-            if (sender is null || sender.Name != "Erik")
+        {  
+            if (_gameManager.GetHostId() != Context.ConnectionId)
             {
                 await Clients
                     .Caller
-                    .SendAsync(MessageType.MessageReceived, "You are not known a a user or not the gamehost, did you register?", _systemUser, AlertType.Warning, "");
+                    .SendAsync(MessageType.MessageReceived, "You are not the gamehost, did you register correctly?", _systemUser, AlertType.Warning, "");
                 return;
             }
-
+            
             _gameManager.Enable();
             await Clients
                 .All
@@ -72,7 +83,7 @@ namespace SignalRDemoBlazor.Server.Hubs
         {
             if (_gameManager.CanRegister(userName, pinCode, Context.ConnectionId, out string message))
             {
-                var user = _gameManager.RegisterUser(userName, Context.ConnectionId);
+                var user = _gameManager.RegisterUser(userName, Context.ConnectionId, pinCode);
                 await Groups.AddToGroupAsync(Context.ConnectionId, user.Group);
 
                 await Clients
@@ -128,12 +139,11 @@ namespace SignalRDemoBlazor.Server.Hubs
 
         public async Task StartQuiz()
         {
-            var sender = _gameManager.FindUserByConnection(Context.ConnectionId);
-            if (sender is null || sender.Name != "Erik")
+            if (_gameManager.GetHostId() != Context.ConnectionId)
             {
                 await Clients
                     .Caller
-                    .SendAsync(MessageType.MessageReceived, "You are not known a a user or not the gamehost, did you register?", _systemUser, AlertType.Warning, "");
+                    .SendAsync(MessageType.MessageReceived, "You are not the gamehost, did you register correctly?", _systemUser, AlertType.Warning, "");
                 return;
             }
 

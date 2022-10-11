@@ -25,6 +25,7 @@ namespace SignalRDemoBlazor.Client.Components.Game
         private ButtonClass RefreshButton { get; set; } = null!;
         private ButtonClass StartQuizButton { get; set; } = null!;
         private ButtonClass StartQuestionButton { get; set; } = null!;
+        private ButtonClass ResetButton { get; set; } = null!;
         private ButtonClass ActivateSignalRButton { get; set; } = null!;
         private Question? CurrentQuestion { get; set; }
         private List<ButtonClass> CurrentAnswerOptions { get; set; } = new();
@@ -50,21 +51,28 @@ namespace SignalRDemoBlazor.Client.Components.Game
                 ButtonType = ButtonTypes.Name,
                 Name = "Start quiz",
                 ClickAction = async args => await SignalRService.StartQuiz(),
-                DisabledCondition = () => UserName != "Erik" //Very secure :).
+                DisabledCondition = () => !SignalRService.AmHost
             };
             StartQuestionButton = new()
             {
                 ButtonType = ButtonTypes.Name,
                 Name = "Start",
                 ClickAction = async args => await SignalRService.StartQuestion(),
-                DisabledCondition = () => UserName != "Erik" // Very secure :).
+                DisabledCondition = () => !SignalRService.AmHost
             };
             ActivateSignalRButton = new()
             {
                 ButtonType = ButtonTypes.Name,
                 Name = "Activate",
                 ClickAction = async args => await ActivateSignalR(),
-                DisabledCondition = () => UserName != "Erik" // Very secure :).
+                DisabledCondition = () => !SignalRService.AmHost
+            };
+            ResetButton = new()
+            {
+                ButtonType = ButtonTypes.Name,
+                Name = "Reset",
+                ClickAction = async args => await ResetGame(),
+                DisabledCondition = () => !SignalRService.AmHost
             };
 
             SignalRService.QuestionAsked += QuestionAsked;
@@ -75,6 +83,11 @@ namespace SignalRDemoBlazor.Client.Components.Game
 
             MayEnable = await SignalRService.GetMayEnable();
 
+        }
+
+        private async Task ResetGame()
+        {
+            await SignalRService.ResetGame();
         }
 
         private async Task ActivateSignalR()
