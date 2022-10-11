@@ -4,6 +4,8 @@ namespace SignalRDemoBlazor.Server.Services
 {
     public interface IGameManager
     {
+        bool MayEnable { get; }
+        void Enable();
         bool CanRegister(string userName, string pinCode, string connectionId, out string message);
         GameUser? FindUser(string target);
         GameUser? FindUserByConnection(string connectionId);

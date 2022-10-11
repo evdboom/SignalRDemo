@@ -7,6 +7,7 @@ namespace SignalRDemoBlazor.Server.Services
 {
     public class GameManager : IGameManager
     {
+
         private readonly IHubContext<DemoHub> _hubContext;
         private readonly List<QuestionControl> _questions;
         private QuestionControl? _currentQuestion;
@@ -18,6 +19,8 @@ namespace SignalRDemoBlazor.Server.Services
         private int[] _scoreList;
 
         private int _lastGroup;
+        private bool _mayEnable;
+        public bool MayEnable => _mayEnable;
 
         public GameManager(IHubContext<DemoHub> hubContext)
         {
@@ -49,6 +52,11 @@ namespace SignalRDemoBlazor.Server.Services
             _lastGroup = -1;
             _questions = GetQuestions()
                         .ToList();
+        }
+
+        public void Enable()
+        {
+            _mayEnable = true;
         }
 
         private IEnumerable<QuestionControl> GetQuestions()

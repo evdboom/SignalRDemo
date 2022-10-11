@@ -24,3 +24,17 @@
         </div>        
     </div>
 </div>
+<div class="rounded border border-secondary vh-35" @ref=MessageArea>
+    @foreach (var message in Messages)
+    {
+        <div class="rounded border bg-opacity-25 @GetBorder(message) m-1 p-1">
+            <div>
+                @message.Title
+            </div>
+            <span>
+                @message.Body
+                <span class="float-end">@message.ReceiveDateTime.ToString("g")</span>
+            </span>
+        </div>
+    }
+</div>

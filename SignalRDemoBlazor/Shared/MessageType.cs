@@ -25,5 +25,10 @@
 
         public const string QuestionStarted = "QuestionStarted";
         public const string GetState = "GetState";
+
+        public const string MayEnable = "MayEnable";
+        public const string GetMayEnable = "GetMayEnable";
+
+        public const string ActivateSignalR = "ActivateSignalR";
     }
 }

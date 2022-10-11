@@ -1,4 +1,5 @@
-﻿using SignalRDemoBlazor.Shared;
+﻿using SignalRDemoBlazor.Client.Events;
+using SignalRDemoBlazor.Shared;
 
 namespace SignalRDemoBlazor.Client.Components.Messaging
 {
@@ -6,7 +7,7 @@ namespace SignalRDemoBlazor.Client.Components.Messaging
     {
         private readonly List<MessageClass> _messages;
 
-        public event EventHandler? MessageListChanged;
+        public event EventHandler<MessageEventArgs>? MessageListChanged;
 
         public MessageService()
         {
@@ -32,7 +33,7 @@ namespace SignalRDemoBlazor.Client.Components.Messaging
             message.ShouldClose += RemoveMessage;
             message.Open();
             _messages.Add(message);
-            MessageListChanged?.Invoke(this, new EventArgs());
+            MessageListChanged?.Invoke(this, new MessageEventArgs(message));
 
 
         }
@@ -72,7 +73,7 @@ namespace SignalRDemoBlazor.Client.Components.Messaging
             }
 
             _messages.Remove(message);
-            MessageListChanged?.Invoke(this, new EventArgs());
+            MessageListChanged?.Invoke(this, new MessageEventArgs(message));
             (message).Dispose();
         }
     }

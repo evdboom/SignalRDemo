@@ -1,3 +1,3 @@
-﻿export const scrollToTop = (element) => {
+﻿export const scrollToBottom = (element) => {
     element.scrollTop = element.scrollHeight;
 }

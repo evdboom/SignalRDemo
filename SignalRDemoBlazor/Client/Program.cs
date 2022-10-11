@@ -14,6 +14,7 @@ builder.Services
     .AddSingleton<LocalStorageService>()
     .AddSingleton<SessionStorageService>()
     .AddSingleton<SignalRService>()
-    .AddSingleton<MessageService>();
+    .AddSingleton<MessageService>()
+    .AddSingleton<ScrollService>();
 
 await builder.Build().RunAsync();

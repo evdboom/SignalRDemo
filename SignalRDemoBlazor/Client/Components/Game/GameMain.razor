@@ -4,24 +4,37 @@
     <div class="col-lg-2">
         <h3 style="@GetStyle()">Welcome @UserName</h3>
     </div>
-    <div class="col-lg-1 offset-lg-3">
-        <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off" checked @onclick="Enable">
-        <label class="btn btn-outline-success btn-outline-white" for="success-outlined">SignalR On</label>
-    </div>
-    <div class="col-lg-1">
-        <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off" @onclick="Disable">
-        <label class="btn btn-outline-danger btn-outline-white" for="danger-outlined">SignalR Off</label>
-    </div>
+    @if (MayEnable)
+    {
+        <div class="col-lg-1 offset-lg-3">
+            <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off" @onclick="Enable">
+            <label class="btn btn-outline-success btn-outline-white" for="success-outlined">SignalR On</label>
+        </div>
+        <div class="col-lg-1">
+            <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off" checked @onclick="Disable">
+            <label class="btn btn-outline-danger btn-outline-white" for="danger-outlined">SignalR Off</label>
+        </div>
+    }
+    else
+    {
+        <div class="col-auto offset-lg-3"></div>
+    }
     @if (SignalRService.Disabled)
     {
-        <div class="col-lg-1">
+        <div class="col-lg-2">
             <Button Item="RefreshButton"/>            
         </div>
     }
-    @if (UserName == "Erik")
+    @if (UserName == "Erik" && MayEnable)
     {
-        <div class="col-lg-1">
+        <div class="col-lg-2">
             <Button Item="StartQuizButton" />
+        </div>
+    }
+    @if (UserName == "Erik" && !MayEnable)
+    {
+        <div class="col-lg-2">
+            <Button Item="ActivateSignalRButton" />
         </div>
     }
 </div>
@@ -32,7 +45,7 @@
             Group="@Group"/>
     </div>
     <div class="col-lg-4">
-        <MessageWindow />
+        <MessageWindow @ref=MessageWindow />
     </div>    
 </div>
 @if (CurrentQuestion is not null)

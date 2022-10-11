@@ -44,6 +44,30 @@ namespace SignalRDemoBlazor.Server.Hubs
             }
         }
 
+        public Task<bool> GetMayEnable()
+        {
+            var mayEnable = _gameManager.MayEnable;
+            return Task.FromResult(mayEnable);
+        }
+
+        public async Task ActivateSignalR()
+        {            
+            var sender = _gameManager.FindUserByConnection(Context.ConnectionId);
+            if (sender is null || sender.Name != "Erik")
+            {
+                await Clients
+                    .Caller
+                    .SendAsync(MessageType.MessageReceived, "You are not known a a user or not the gamehost, did you register?", _systemUser, AlertType.Warning, "");
+                return;
+            }
+
+            _gameManager.Enable();
+            await Clients
+                .All
+                .SendAsync(MessageType.MayEnable, _gameManager.MayEnable);
+
+        }
+
         public async Task RegisterUser(string userName, string pinCode)
         {
             if (_gameManager.CanRegister(userName, pinCode, Context.ConnectionId, out string message))

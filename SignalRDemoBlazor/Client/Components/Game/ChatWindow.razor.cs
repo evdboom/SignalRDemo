@@ -22,8 +22,7 @@ namespace SignalRDemoBlazor.Client.Components.Game
         [Inject]
         private SignalRService SignalRService { get; set; } = null!;
         [Inject]
-        private IJSRuntime JsRuntime { get; set; } = null;
-        private Lazy<Task<IJSObjectReference>> _moduleTask;
+        private ScrollService ScrollService { get; set; } = null!;
 
         private List<GameUser> Users { get; set; } = new();
         private string Message { get; set; } = string.Empty;
@@ -48,8 +47,6 @@ namespace SignalRDemoBlazor.Client.Components.Game
             SignalRService.UsersChanged += UsersChanged;
             Messages = await SignalRService.GetChat();
             Users = await SignalRService.GetUsers();
-            _moduleTask = new(() => JsRuntime.InvokeAsync<IJSObjectReference>(
-                "import", "./js/scroll-service.js").AsTask());
         }
 
         private async Task KeyPress(KeyboardEventArgs args)
@@ -105,10 +102,10 @@ namespace SignalRDemoBlazor.Client.Components.Game
             {
                 Messages.Add(e.Message);
             }
-            
+
+            await ScrollService.ScrollToBottom(ChatArea);
             StateHasChanged();
-            var module = await _moduleTask.Value;
-            await module.InvokeVoidAsync("scrollToTop", ChatArea);            
+         
         }
     }
 }

@@ -11,6 +11,7 @@ namespace SignalRDemoBlazor.Client.Components.Messaging
         public string Body { get; set; } = string.Empty;
         public bool ShowRemainingTime { get; set; }
         public GameUser? User { get; set; }
+        public DateTime ReceiveDateTime { get; set; }
 
         public string? Code { get; set; }
 

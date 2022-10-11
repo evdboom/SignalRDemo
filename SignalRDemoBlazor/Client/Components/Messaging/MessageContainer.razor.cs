@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using SignalRDemoBlazor.Client.Events;
 
 namespace SignalRDemoBlazor.Client.Components.Messaging
 {
@@ -12,7 +13,7 @@ namespace SignalRDemoBlazor.Client.Components.Messaging
             MessageService.MessageListChanged += MessagesChanged;
         }
 
-        private void MessagesChanged(object? sender, EventArgs e)
+        private void MessagesChanged(object? sender, MessageEventArgs e)
         {
             StateHasChanged();
         }

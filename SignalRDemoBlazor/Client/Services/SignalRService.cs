@@ -20,6 +20,7 @@ namespace SignalRDemoBlazor.Client.Services
         private HubConnection? _connection;
         private bool _disabled;
 
+        public event EventHandler<MessageEventArgs>? MessageAdded;
         public event EventHandler<MessageEventArgs>? MessageReceived;
         public event EventHandler<MessageEventArgs>? ChatReceived;
         public event EventHandler? UsersChanged;
@@ -27,11 +28,12 @@ namespace SignalRDemoBlazor.Client.Services
         public event EventHandler<ProgressEventArgs>? QuestionProgressUpdated;
         public event EventHandler<AnswerEventArgs>? QuestionDone;
         public event EventHandler? QuestionStarted;
+        public event EventHandler<bool>? MayEnable;
+
 
         public bool Disabled => _disabled;
         public bool Connected => _connection?.State == HubConnectionState.Connected;
 
-        
 
         public SignalRService(NavigationManager navigation, SessionStorageService storage)
         {
@@ -50,8 +52,6 @@ namespace SignalRDemoBlazor.Client.Services
 
             _connection.On(MessageType.MessageReceived, async (string message, GameUser sender, AlertType type, string? messageCode) =>
             {
-                if (!_disabled)
-                {
                     var totalMessage = new MessageClass
                     {
                         Title = (sender.IsSystemUser || messageCode == MessageCodes.SuccesfullyJoined) ? "System" : $"{sender?.Name ?? "Someone"} sent you a message",
@@ -60,12 +60,18 @@ namespace SignalRDemoBlazor.Client.Services
                         Code = messageCode,
                         User = sender
                     };
-                    MessageReceived?.Invoke(this, new MessageEventArgs(totalMessage));
 
                     if (messageCode == MessageCodes.SuccesfullyJoined)
                     {
                         await _storage.SetItemAsync(User, sender!.Name);
                     }
+                if (!_disabled)
+                {
+                    MessageReceived?.Invoke(this, new MessageEventArgs(totalMessage));
+                }
+                else
+                {
+                    MessageAdded?.Invoke(this, new MessageEventArgs(totalMessage));
                 }
             });
             _connection.On(MessageType.ChatReceived, async (string message, GameUser sender) =>
@@ -123,11 +129,30 @@ namespace SignalRDemoBlazor.Client.Services
                     QuestionProgressUpdated?.Invoke(this, new ProgressEventArgs { Loaded = progress.CurrentProgress, Total = progress.TotalProgress });
                 }
             });
+            _connection.On(MessageType.MayEnable, (bool mayEnable) =>
+            {
+                MayEnable?.Invoke(this, mayEnable);
+            });
                             
             await _connection.StartAsync();
 
             await RefreshUsers();
             await Reregister();
+        }
+
+        public async Task<bool> GetMayEnable()
+        {
+            if (!Connected)
+            {
+                throw new InvalidOperationException("Hub not connected yet, did you initialize?");
+            }
+
+            var mayEnable = await _connection!.InvokeAsync<bool>(MessageType.GetMayEnable);
+            if (!mayEnable)
+            {
+                Disable();
+            }
+            return mayEnable;
         }
 
         public async Task RefreshUsers()
@@ -261,6 +286,16 @@ namespace SignalRDemoBlazor.Client.Services
                     QuestionProgressUpdated?.Invoke(this, new ProgressEventArgs { Loaded = progress.CurrentProgress, Total = progress.TotalProgress });
                 }
             }
+        }
+
+        public async Task ActivateSignalR()
+        {
+            if (!Connected)
+            {
+                throw new InvalidOperationException("Hub not connected yet, did you initialize?");
+            }
+
+            await _connection!.SendAsync(MessageType.ActivateSignalR);
         }
     }
 }

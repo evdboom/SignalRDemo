@@ -18,12 +18,14 @@ namespace SignalRDemoBlazor.Client.Components.Game
         [Inject]
         private SignalRService SignalRService { get; set; } = null!;
 
+        private MessageWindow MessageWindow { get; set; } = null!;
         private Modal AnswerModal { get; set; } = null!;
         private Modal QuestionModal { get; set; } = null!;
         private ModalSize ModalSize { get; set; }
         private ButtonClass RefreshButton { get; set; } = null!;
         private ButtonClass StartQuizButton { get; set; } = null!;
         private ButtonClass StartQuestionButton { get; set; } = null!;
+        private ButtonClass ActivateSignalRButton { get; set; } = null!;
         private Question? CurrentQuestion { get; set; }
         private List<ButtonClass> CurrentAnswerOptions { get; set; } = new();
         private AnswerResult? Result { get; set; }
@@ -32,8 +34,9 @@ namespace SignalRDemoBlazor.Client.Components.Game
         private int CurrentQuestionMaxProgress { get; set; }
         private bool CurrentQuestionStarted { get; set; }
         private bool LastQuestion { get; set; }
+        private bool MayEnable { get; set; }
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
             RefreshButton = new()
             {
@@ -54,14 +57,35 @@ namespace SignalRDemoBlazor.Client.Components.Game
                 ButtonType = ButtonTypes.Name,
                 Name = "Start",
                 ClickAction = async args => await SignalRService.StartQuestion(),
-                DisabledCondition = () => UserName != "Erik" //Very secure :).
+                DisabledCondition = () => UserName != "Erik" // Very secure :).
+            };
+            ActivateSignalRButton = new()
+            {
+                ButtonType = ButtonTypes.Name,
+                Name = "Activate",
+                ClickAction = async args => await ActivateSignalR(),
+                DisabledCondition = () => UserName != "Erik" // Very secure :).
             };
 
             SignalRService.QuestionAsked += QuestionAsked;
             SignalRService.QuestionProgressUpdated += UpdateProgress;
             SignalRService.QuestionDone += QuestionDone;
             SignalRService.QuestionStarted += QuestionStarted;
+            SignalRService.MayEnable += SetMayEnable;
 
+            MayEnable = await SignalRService.GetMayEnable();
+
+        }
+
+        private async Task ActivateSignalR()
+        {
+            await SignalRService.ActivateSignalR();
+        }
+
+        private void SetMayEnable(object? sender, bool mayEnable)
+        {
+            MayEnable = mayEnable;
+            StateHasChanged();
         }
 
         private void QuestionStarted(object? sender, EventArgs e)
@@ -120,6 +144,7 @@ namespace SignalRDemoBlazor.Client.Components.Game
         private async Task Refresh()
         {
             await SignalRService.Refresh();
+            await MessageWindow.Refresh();
         }
 
         private string GetStyle()
@@ -132,8 +157,9 @@ namespace SignalRDemoBlazor.Client.Components.Game
             return $"color: {Group}";
         }
 
-        private void Enable()
+        private async Task Enable()
         {
+            await Refresh();
             SignalRService.Enable();
         }
 
