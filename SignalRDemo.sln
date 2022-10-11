@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRDemo", "SignalRDemo\SignalRDemo.csproj", "{79B34B9C-743F-4445-8C5B-9C6C92B12230}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRDemoBlazor.Server", "SignalRDemoBlazor\Server\SignalRDemoBlazor.Server.csproj", "{BDE1ED03-F9FA-4136-AF25-B99B503D00A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRDemoBlazor.Client", "SignalRDemoBlazor\Client\SignalRDemoBlazor.Client.csproj", "{EA802124-1B35-4D94-989B-963D814D1ACA}"
@@ -17,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{79B34B9C-743F-4445-8C5B-9C6C92B12230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{79B34B9C-743F-4445-8C5B-9C6C92B12230}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{79B34B9C-743F-4445-8C5B-9C6C92B12230}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{79B34B9C-743F-4445-8C5B-9C6C92B12230}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BDE1ED03-F9FA-4136-AF25-B99B503D00A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BDE1ED03-F9FA-4136-AF25-B99B503D00A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDE1ED03-F9FA-4136-AF25-B99B503D00A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
