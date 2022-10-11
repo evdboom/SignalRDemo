@@ -29,6 +29,9 @@ namespace SignalRDemoBlazor.Server.Hubs
                 return;
             }
             _gameManager.Reset();
+            await Clients
+                .All
+                .SendAsync(MessageType.MayEnable, false);
         }
 
         public Task<List<GameUser>> GetUserList()

@@ -137,6 +137,10 @@ namespace SignalRDemoBlazor.Client.Services
             });
             _connection.On(MessageType.MayEnable, (bool mayEnable) =>
             {
+                if (!mayEnable)
+                {
+                    Disable();
+                }
                 MayEnable?.Invoke(this, mayEnable);
             });
 
