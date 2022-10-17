@@ -12,7 +12,7 @@
                         <button type="button" class="btn-close" @onclick="Close" aria-label="Sluiten"></button>
                     }
                 </div>
-                <div class="modal-body @SupportsDropdowns()">
+                <div class="modal-body @SupportsDropdowns() @GetHideOverflow()">
                     @ModalBody
                 </div>
                 @if (ModalFooter != null)

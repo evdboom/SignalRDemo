@@ -131,3 +131,19 @@
     </ModalFooter>
 </Modal>
 }
+<Modal ModalId="refresh-modal"
+       @ref=RefreshModal
+       ModalSize="@ModalSize"
+       Draggable=true
+       UserCannotClose=true
+       HideOverflow=true>
+    <ModalTitle>
+        <h4>Refreshing</h4>
+    </ModalTitle>
+    <ModalBody>
+        <h5>Loading...</h5>
+        <div class="loading text-center">
+            <i class="bi bi-hourglass-split h1 opacity-75"></i>
+        </div>
+    </ModalBody>
+</Modal>

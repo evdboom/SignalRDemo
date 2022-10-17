@@ -21,23 +21,35 @@ else if (Registering)
 }
 else
 {
-    <div class="p-4">
-        <div class="form-group row">
-            <div class="col-lg-3">
-                <label for="username-input" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username-input" @bind="UserName" @bind:event="oninput" @onkeypress="KeyPress" placeholder="Choose a name" />
+    <div class="modal fade show d-block" id="loading-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content position-relative">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        Please log in
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <div class="col">
+                            <label for="username-input" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username-input" @bind="UserName" @bind:event="oninput" @onkeypress="KeyPress" placeholder="Choose a name" />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col">
+                            <label for="pincode-input" class="form-label">Pincode</label>
+                            <input type="password" class="form-control" id="pincode-input" @bind="PinCode" @bind:event="oninput" @onkeypress="KeyPress" placeholder="Enter PIN code" />
+                        </div>
+                    </div>
+                    <div class="form-group row mt-3">
+                        <div class="col">
+                            <Button Item="RegisterButton" />
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-lg-3">
-                <label for="pincode-input" class="form-label">Pincode</label>
-                <input type="password" class="form-control" id="pincode-input" @bind="PinCode" @bind:event="oninput" @onkeypress="KeyPress" placeholder="Enter PIN code" />
-            </div>
-        </div>
-        <div class="form-group row mt-3">
-            <div class="col-lg-3">
-                <Button Item="RegisterButton"/>
-            </div>        
         </div>
     </div>
+    <div class="modal-backdrop show"></div>
 }

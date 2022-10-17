@@ -21,6 +21,7 @@ namespace SignalRDemoBlazor.Client.Components.Game
         private MessageWindow MessageWindow { get; set; } = null!;
         private Modal AnswerModal { get; set; } = null!;
         private Modal QuestionModal { get; set; } = null!;
+        private Modal RefreshModal { get; set; } = null!;
         private ModalSize ModalSize { get; set; }
         private ButtonClass RefreshButton { get; set; } = null!;
         private ButtonClass StartQuizButton { get; set; } = null!;
@@ -156,6 +157,10 @@ namespace SignalRDemoBlazor.Client.Components.Game
 
         private async Task Refresh()
         {
+            await RefreshModal.Show();
+            StateHasChanged();
+            await Task.Delay(1000);
+            await RefreshModal.Close();
             await SignalRService.Refresh();
             await MessageWindow.Refresh();
         }

@@ -25,6 +25,8 @@ namespace SignalRDemoBlazor.Client.Components.Modals
         public bool SupportDropdowns { get; set; }
         [Parameter]
         public bool UserCannotClose { get; set; }
+        [Parameter]
+        public bool HideOverflow { get; set; }
 
         private bool _showDialog;
         private bool _dragging;
@@ -38,6 +40,13 @@ namespace SignalRDemoBlazor.Client.Components.Modals
             _showDialog = true;
             await OnShow.InvokeAsync(null);
             StateHasChanged();
+        }
+
+        private string GetHideOverflow()
+        {
+            return HideOverflow
+                ? "overflow-hidden"
+                : string.Empty;
         }
 
         public async Task Close()
