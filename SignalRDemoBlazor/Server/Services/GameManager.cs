@@ -17,6 +17,7 @@ namespace SignalRDemoBlazor.Server.Services
         private readonly ConcurrentDictionary<string, Score> _scores;
         private readonly string[] _groups;
 
+        private const string HostGroup = "Host";
         private const string PincodeVariable = "Pincode";
         private const string GamehostPincodeVariable = "GameHostPincode";
         private string _pinCode;
@@ -173,9 +174,9 @@ namespace SignalRDemoBlazor.Server.Services
 
         }
 
-        public GameUser? ReregisterUser(string userName, string connectionId)
+        public GameUser? ReregisterUser(string userName, string connectionId, string oldConnectionId)
         {
-            if (_removedUsers.FirstOrDefault(user => user.Name == userName) is GameUser reconnect && FindUser(userName) is null)
+            if (_removedUsers.FirstOrDefault(user => user.Name == userName && user.ConnectionId == oldConnectionId) is GameUser reconnect && FindUser(userName) is null)
             {
                 reconnect.ConnectionId = connectionId;
                 _users.Add(reconnect);
@@ -198,13 +199,14 @@ namespace SignalRDemoBlazor.Server.Services
             {
                 throw new InvalidOperationException(message);
             }
+            var isHost = pinCode == _hostPincode;
 
             var user = new GameUser
             {
                 ConnectionId = connectionId,
-                Group = GetNextGroup(),
+                Group = isHost ? HostGroup : GetNextGroup(),
                 Name = userName,
-                IsGameHost = pinCode == _hostPincode
+                IsGameHost = isHost
             };
             _users.Add(user);
 

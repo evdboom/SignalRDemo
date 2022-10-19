@@ -67,7 +67,7 @@ namespace SignalRDemoBlazor.Client.Services
 
                 if (messageCode == MessageCodes.SuccesfullyJoined)
                 {
-                    await _storage.SetItemAsync(User, sender!.Name);
+                    await _storage.SetItemAsync(User, sender!);
                     _amHost = sender!.IsGameHost;
                 }
 
@@ -192,10 +192,10 @@ namespace SignalRDemoBlazor.Client.Services
 
         private async Task Reregister()
         {
-            var user = await _storage.GetItemAsync<string>(User);
-            if (!string.IsNullOrEmpty(user))
+            var user = await _storage.GetItemAsync<GameUser>(User);
+            if (user is not null)
             {
-                await _connection!.SendAsync(MessageType.ReregisterUser, user);
+                await _connection!.SendAsync(MessageType.ReregisterUser, user.Name, user.ConnectionId);
             }
         }
 

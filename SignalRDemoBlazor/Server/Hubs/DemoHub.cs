@@ -40,9 +40,9 @@ namespace SignalRDemoBlazor.Server.Hubs
             return Task.FromResult(users);
         }
 
-        public async Task ReregisterUser(string userName)
+        public async Task ReregisterUser(string userName, string oldConnectionId)
         {
-            if (_gameManager.ReregisterUser(userName, Context.ConnectionId) is GameUser reconnect)
+            if (_gameManager.ReregisterUser(userName, Context.ConnectionId, oldConnectionId) is GameUser reconnect)
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, reconnect.Group);
 
